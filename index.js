@@ -22,8 +22,11 @@ app.upload = multer({
 	}
 });
 
+// for site
 const USER = process.env.ACCESS_USER;
 const PASS = process.env.ACCESS_PASS;
+
+const TOKEN = process.env.ACCESS_TOKEN; // for api
 
 const PAGES = {
 	login: fs.readFileSync(__dirname + '/pages/login.html', 'utf8'),
@@ -35,17 +38,20 @@ app.auth = (req, res, next) => {
 	var m = req.method;
 	if(m == 'POST' && !req.body) return next();
 	var ck = req.cookies?.user;
-	if(!ck || (
-		ck.name !== USER ||
-		ck.password !== PASS
-	)) {
-		switch(m) {
-			case 'GET':
-				return res.send(PAGES.login);
-			case 'POST':
-				return res.status(400).send({error: 'Unauthorized.'});
-			default:
-				return next();
+	var tk = req.headers['authorization'];
+	if(!tk || tk !== TOKEN) {
+		if(!ck || (
+			ck.name !== USER ||
+			ck.password !== PASS
+		)) {
+			switch(m) {
+				case 'GET':
+					return res.send(PAGES.login);
+				case 'POST':
+					return res.status(400).send({error: 'Unauthorized.'});
+				default:
+					return next();
+			}
 		}
 	}
 

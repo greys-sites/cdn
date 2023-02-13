@@ -10,6 +10,10 @@ const TEMPLATES = {
 	upload: fs.readFileSync(__dirname + '/../pages/upload.html', 'utf8')
 }
 
+const COMPS = {
+	card: require('../components/card')
+}
+
 module.exports = (app) => {
 	app.get('/upload', app.auth, (req, res) => {
 		res.send(TEMPLATES.upload);
@@ -45,12 +49,21 @@ module.exports = (app) => {
 	app.get('/images', app.auth, async (req, res) => {
 		var images = await app.stores.images.getAll();
 		var html;
-		if(images?.length) html = images.map(i => `<a href='/${i.hid}.${i.mime}'><img src='/${i.hid}.${i.mime}' /></a>`).join('<br />');
+		if(images?.length) html = images.map(i => COMPS.card(i)).join('\n');
 		else html = '<p>No images to show :(</p>';
 		res.send(TEMPLATES.images.replace('$IMAGES', html));
 	})
 
-	app.get('/images/:hid', app.auth, async (req, res) => {
+	app.get('/api/images/:hid', app.auth, async (req, res) => {
+		var images = await app.stores.images.getAll();
+		for(var image of images) {
+			image.path = `/${image.hid}.${image.mime}`;
+		}
+		
+		res.send(images);
+	})
+
+	app.get('/api/images/:hid', async (req, res) => {
 		var image = await app.stores.images.get(req.params.hid);
 		image.path = `/${image.hid}.${image.mime}`;
 		res.send(image);

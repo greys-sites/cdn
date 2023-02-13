@@ -143,7 +143,7 @@ class ImageStore {
 
 	async getAll() {
 		try {
-			var data = await this.db.query(`select * from images`);
+			var data = await this.db.query(`select * from images order by id asc`);
 		} catch(e) {
 			console.log(e);
 			return Promise.reject(e.message);

@@ -21,12 +21,16 @@
 	</style>
 </head>
 <body>
-	<form action="upload" method="post" enctype="multipart/form-data">
-      <label>Select image(s) to upload:
-      <input name="files" id="files" type="file" multiple>
+	<form action="login" method="post" enctype="application/json">
+      <label>Username:
+      <input type="text" name="name" id="name">
       </label>
       <br>
-      <input value="upload" name="submit" type="submit">
+      <label>Password:
+      <input type="password" name="password" id="password">
+      </label>
+      <br>
+      <input value="login" name="submit" type="submit">
     </form>
 </body>
 </html>

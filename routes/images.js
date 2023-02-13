@@ -11,8 +11,8 @@ const TEMPLATES = {
 }
 
 module.exports = (app) => {
-	app.get('/upload', (req, res) => {
-		res.send(TEMPLATES.upload.replace('', ''));
+	app.get('/upload', app.auth, (req, res) => {
+		res.send(TEMPLATES.upload);
 	})
 
 	app.post('/upload', app.upload.array('files',10), app.auth, async (req, res) => {
@@ -26,7 +26,6 @@ module.exports = (app) => {
 					description: descs[i],
 					mime: MIME_MAP[f.mimetype]
 				})
-				console.log(c);
 
 				fs.writeFileSync(`${__dirname}/../files/${c.hid}.${MIME_MAP[f.mimetype]}`, f.buffer);
 			} catch(e) {
@@ -40,18 +39,18 @@ module.exports = (app) => {
 		}
 
 		if(errs.length) return res.status(500).send(errs);
-		else return res.status(200).send();
+		else return res.redirect(`/images`);
 	})
 
-	app.get('/images', async (req, res) => {
+	app.get('/images', app.auth, async (req, res) => {
 		var images = await app.stores.images.getAll();
 		var html;
-		if(images?.length) html = images.map(i => `<img src='/${i.hid}.${i.mime}' />`).join('<br />');
+		if(images?.length) html = images.map(i => `<a href='/${i.hid}.${i.mime}'><img src='/${i.hid}.${i.mime}' /></a>`).join('<br />');
 		else html = '<p>No images to show :(</p>';
 		res.send(TEMPLATES.images.replace('$IMAGES', html));
 	})
 
-	app.get('/images/:hid', async (req, res) => {
+	app.get('/images/:hid', app.auth, async (req, res) => {
 		var image = await app.stores.images.get(req.params.hid);
 		image.path = `/${image.hid}.${image.mime}`;
 		res.send(image);

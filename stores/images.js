@@ -114,7 +114,6 @@ class ImageStore {
 	 		return Promise.reject(e.message);
 		}
 		
-		console.log(c);
 		return await this.get(c.rows[0].hid);
 	}
 

@@ -68,4 +68,12 @@ module.exports = (app) => {
 		image.path = `/${image.hid}.${image.mime}`;
 		res.send(image);
 	})
+
+	app.post('/delete/:hid', app.auth, async (req, res) => {
+		var image = await app.stores.images.get(req.params.hid);
+		if(!image?.id) return res.status(404).send('Image not found.');
+		
+		await image.delete();
+		res.redirect('/images');
+	})
 }

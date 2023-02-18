@@ -54,7 +54,7 @@ module.exports = (app) => {
 		res.send(TEMPLATES.images.replace('$IMAGES', html));
 	})
 
-	app.get('/api/images/:hid', app.auth, async (req, res) => {
+	app.get('/api/images', app.auth, async (req, res) => {
 		var images = await app.stores.images.getAll();
 		for(var image of images) {
 			image.path = `/${image.hid}.${image.mime}`;

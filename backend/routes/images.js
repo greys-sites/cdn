@@ -5,20 +5,7 @@ const MIME_MAP = {
 	'image/png': 'png'
 }
 
-const TEMPLATES = {
-	images: fs.readFileSync(__dirname + '/../templates/images.html', 'utf8'),
-	upload: fs.readFileSync(__dirname + '/../pages/upload.html', 'utf8')
-}
-
-const COMPS = {
-	card: require('../components/card')
-}
-
 module.exports = (app) => {
-	app.get('/upload', app.auth, (req, res) => {
-		res.send(TEMPLATES.upload);
-	})
-
 	app.post('/upload', app.upload.array('files',10), app.auth, async (req, res) => {
 		var errs = [];
 		var descs = req.body?.descriptions?.length ? JSON.parse(req.body.descriptions) : [];
@@ -30,6 +17,8 @@ module.exports = (app) => {
 					description: descs[i],
 					mime: MIME_MAP[f.mimetype]
 				})
+
+				c.path = `/${c.hid}.${c.mime}`;
 
 				fs.writeFileSync(`${__dirname}/../files/${c.hid}.${MIME_MAP[f.mimetype]}`, f.buffer);
 			} catch(e) {
@@ -43,15 +32,7 @@ module.exports = (app) => {
 		}
 
 		if(errs.length) return res.status(500).send(errs);
-		else return res.redirect(`/images`);
-	})
-
-	app.get('/images', app.auth, async (req, res) => {
-		var images = await app.stores.images.getAll();
-		var html;
-		if(images?.length) html = images.map(i => COMPS.card(i)).join('\n');
-		else html = '<p>No images to show :(</p>';
-		res.send(TEMPLATES.images.replace('$IMAGES', html));
+		else return res.status(200).send(c);
 	})
 
 	app.get('/api/images', app.auth, async (req, res) => {
@@ -60,13 +41,13 @@ module.exports = (app) => {
 			image.path = `/${image.hid}.${image.mime}`;
 		}
 		
-		res.send(images);
+		res.status(200).send(images);
 	})
 
 	app.get('/api/images/:hid', async (req, res) => {
 		var image = await app.stores.images.get(req.params.hid);
 		image.path = `/${image.hid}.${image.mime}`;
-		res.send(image);
+		res.status(200).send(image);
 	})
 
 	app.post('/delete/:hid', app.auth, async (req, res) => {
@@ -74,6 +55,6 @@ module.exports = (app) => {
 		if(!image?.id) return res.status(404).send('Image not found.');
 		
 		await image.delete();
-		res.redirect('/images');
+		res.status(200).send();
 	})
 }

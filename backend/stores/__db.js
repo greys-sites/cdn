@@ -31,7 +31,7 @@ module.exports = async (app) => {
 
 	var files = fs.readdirSync(__dirname);
 	for(var file of files) {
-		if(["__db.js", "__migrations.js", "tmp.js"].includes(file)) continue;
+		if(["__db.js", "__migrations.js", "tmp.js", "__models.js"].includes(file)) continue;
 		var name = file.replace(/\.js/i, "");
 
 		stores[name] = require(__dirname+'/'+file)(app, db);

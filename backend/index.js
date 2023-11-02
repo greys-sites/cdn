@@ -22,36 +22,21 @@ app.upload = multer({
 	}
 });
 
-// for site
-const USER = process.env.ACCESS_USER;
-const PASS = process.env.ACCESS_PASS;
-
 const TOKEN = process.env.ACCESS_TOKEN; // for api
-
-const PAGES = {
-	login: fs.readFileSync(__dirname + '/pages/login.html', 'utf8'),
-	index: fs.readFileSync(__dirname + '/pages/index.html', 'utf8')
-}
-
 
 app.auth = (req, res, next) => {
 	var m = req.method;
 	if(m == 'POST' && !req.body) return next();
 	var ck = req.cookies?.user;
-	var tk = req.headers['authorization'];
+	var tk = req.headers['authorization'] || ck.token;
 	if(!tk || tk !== TOKEN) {
-		if(!ck || (
-			ck.name !== USER ||
-			ck.password !== PASS
-		)) {
-			switch(m) {
-				case 'GET':
-					return res.send(PAGES.login);
-				case 'POST':
-					return res.status(400).send({error: 'Unauthorized.'});
-				default:
-					return next();
-			}
+		switch(m) {
+			case 'GET':
+				return res.send(PAGES.login);
+			case 'POST':
+				return res.status(400).send({error: 'Unauthorized.'});
+			default:
+				return next();
 		}
 	}
 
@@ -70,26 +55,18 @@ async function setup() {
 	for(var f of files)
 		await require(__dirname + '/routes/' + f)(app);
 
-	// app.use(express.static(__dirname + '/pages'));
-	app.get('/', app.auth, (req, res) => {
-		res.send(PAGES.index)
-	})
-
 	app.post('/login', (req, res) => {
 		console.log(req.body);
-		var name = req.body?.name;
-		var password = req.body?.password;
+		var token = req.body?.token;
 
-		if(!name || !password) return res.status(400).send('Bad request.');
-		if(name !== USER || password !== PASS)
+		if(token !== TOKEN)
 			return res.status(401).send('Invalid login.');
 
 		res.cookie('user', {
-			name,
-			password
+			token
 		})
 
-		return res.redirect('/');
+		return res.status(200).send();
 	})
 	
 	app.use(express.static(__dirname + '/files'));

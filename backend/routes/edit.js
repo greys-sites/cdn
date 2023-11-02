@@ -5,26 +5,7 @@ const MIME_MAP = {
 	'image/png': 'png'
 }
 
-const TEMPLATES = {
-	edit: fs.readFileSync(__dirname + '/../templates/edit.html', 'utf8')
-}
-
-const COMPS = {
-	form: require('../components/edit')
-}
-
 module.exports = (app) => {
-	app.get('/edit/:hid', app.auth, async (req, res) => {
-		var hid = req.params.hid;
-		var img = await app.stores.images.get(hid);
-		if(!img?.id) return res.send('Image not found :(');
-
-		return res.send(
-			TEMPLATES.edit
-				.replace('$FORM', COMPS.form(img))
-		);
-	})
-
 	app.post('/edit/:hid', app.auth, async (req, res) => {
 		var hid = req.params.hid;
 		var img = await app.stores.images.get(hid);
@@ -40,6 +21,6 @@ module.exports = (app) => {
 		img.description = description;
 		await img.save()
 
-		return res.redirect(`/images`);
+		return res.status(200).send(img);
 	})
 }

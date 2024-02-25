@@ -26,7 +26,8 @@ class ImageStore extends DataStore {
 				hid text,
 				name text,
 				description text,
-				mime text
+				mime text,
+				album text references albums(hid) on delete set NULL
 			)
 		`)
 	}

@@ -5,8 +5,7 @@ const KEYS = {
 	hid: { },
 	name: { patch: true },
 	description: { patch: true },
-	cover_url: { patch: true },
-	images: { patch: true }
+	cover_url: { patch: true }
 }
 
 class Album extends DataObject {
@@ -14,9 +13,9 @@ class Album extends DataObject {
 		super(store, keys, data);
 	}
 
-	async getalbums() {
-		var images = await this.store.app.stores.images.getByHids(this.images);
-		this.imageItems = images;
+	async getImages() {
+		var images = await this.store.app.stores.images.getByAlbum(this.hid);
+		this.images = images;
 
 		return images;
 	}
@@ -34,8 +33,7 @@ class AlbumStore extends DataStore {
 				hid text,
 				name text,
 				description text,
-				cover_url text,
-				images text[]
+				cover_url text
 			)
 		`)
 	}
@@ -46,12 +44,10 @@ class AlbumStore extends DataStore {
 				hid,
 				name,
 				description,
-				cover_url,
-				images
-			) VALUES (find_unique('albums'), $1,$2,$3,$4)
+				cover_url
+			) VALUES (find_unique('albums'), $1,$2,$3)
 			returning *`,
-			[data.name, data.description, data.cover_url,
-			 data.images ?? []])
+			[data.name, data.description, data.cover_url)
 		} catch(e) {
 			console.log(e);
 	 		return Promise.reject(e.message);

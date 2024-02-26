@@ -47,7 +47,7 @@ class AlbumStore extends DataStore {
 				cover_url
 			) VALUES (find_unique('albums'), $1,$2,$3)
 			returning *`,
-			[data.name, data.description, data.cover_url)
+			[data.name, data.description, data.cover_url])
 		} catch(e) {
 			console.log(e);
 	 		return Promise.reject(e.message);

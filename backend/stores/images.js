@@ -12,6 +12,13 @@ class Image extends DataObject {
 	constructor(store, keys, data) {
 		super(store, keys, data);
 	}
+
+	async getAlbum() {
+		var album = await this.store.app.stores.albums.get(this.album);
+		this.fetched.album = album;
+
+		return album;
+	}
 }
 
 class ImageStore extends DataStore {
@@ -38,10 +45,11 @@ class ImageStore extends DataStore {
 				hid,
 				name,
 				description,
-				mime
-			) VALUES (find_unique('images'), $1,$2,$3)
+				mime,
+				album
+			) VALUES (find_unique('images'), $1,$2,$3,$4)
 			returning *`,
-			[data.name, data.description, data.mime])
+			[data.name, data.description, data.mime, data.album])
 		} catch(e) {
 			console.log(e);
 	 		return Promise.reject(e.message);
@@ -89,6 +97,18 @@ class ImageStore extends DataStore {
 	async getByHids(hids) {
 		try {
 			var data = await this.db.query(`select * from images where hid = any($1) order by id asc`, [hids]);
+		} catch(e) {
+			console.log(e);
+			return Promise.reject(e.message);
+		}
+		
+		if(data.rows?.length) return data.rows.map(x => new Image(this, KEYS, x));
+		else return undefined;
+	}
+
+	async getByAlbum(album) {
+		try {
+			var data = await this.db.query(`select * from images where album = $1 order by id asc`, [album]);
 		} catch(e) {
 			console.log(e);
 			return Promise.reject(e.message);

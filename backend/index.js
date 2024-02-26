@@ -68,6 +68,19 @@ async function setup() {
 
 		return res.status(200).send();
 	})
+
+	app.get('/verify', (req, res) => {
+		var token = req.headers['authorization'];
+
+		if(token !== TOKEN)
+			return res.status(401).send('Invalid login.');
+
+		res.cookie('user', {
+			token
+		})
+
+		return res.status(200).send();
+	})
 	
 	app.use(express.static(__dirname + '/files'));
 

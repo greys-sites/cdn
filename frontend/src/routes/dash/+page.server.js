@@ -48,7 +48,9 @@ export const actions = {
 			if(u) {
 				u = u.data;
 				console.log(u);
-				cookies.set('user', token);
+				cookies.set('user', token, {
+					path: '/'
+				});
 			} else return fail(401, {
 				success: false,
 				status: 401,

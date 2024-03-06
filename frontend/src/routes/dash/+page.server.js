@@ -8,6 +8,8 @@ export async function load({ cookies }) {
 		return { user: null }
 	}
 
+	var images = []
+
 	var d;
 	try {
 		d = await axios.get(API + `/verify`, {
@@ -16,7 +18,13 @@ export async function load({ cookies }) {
 			}
 		})
 		d = d.data;
-		console.log(d)
+
+		var r = await axios.get(API + '/api/images', {
+			headers: {
+				'Authorization': u
+			}
+		})
+		if(r) images = r.data;
 	} catch(e) {
 		console.log(e.response ?? e);
 		switch(e.response?.status) {
@@ -32,7 +40,7 @@ export async function load({ cookies }) {
 		}
 	}
 
-	return { user: u };
+	return { id: 'login', user: u, images, API };
 }
 
 export const actions = {
@@ -64,5 +72,53 @@ export const actions = {
 				message: "Login information is incorrect."
 			});
 		}
-	}
+	},
+	upload: async ({ cookies, request }) => {
+		var d = await request.formData();
+		var token = cookies.get('user');
+
+		try {
+			var res = await axios.post(API + "/upload", d, {
+				headers: {
+					Authorization: token,
+					"Content-Type": "multipart/form-data"
+				}
+			})
+		} catch(e) {
+			console.log(e)
+			return fail(e.status ?? 500, {
+				success: false,
+				status: e.response?.status,
+				message: e.response?.data
+			})
+		}
+
+		if(res) res = res.data;
+		console.log(res)
+		return { id: 'upload', success: true, created: res };
+	},
+	delimg: async ({ cookies, request }) => {
+		var d = await request.formData();
+		var token = cookies.get('user');
+		var hid = d.get("hid");
+
+		try {
+			var res = await axios.post(API + `/delete/${hid}`, null, {
+				headers: {
+					Authorization: token
+				}
+			})
+		} catch(e) {
+			console.log(e)
+			return fail(e.status ?? 500, {
+				success: false,
+				status: e.response?.status,
+				message: e.response?.data
+			})
+		}
+
+		if(res) res = res.data;
+		console.log(res)
+		return { id: 'delete', success: true, deleted: hid };
+	},
 }

@@ -30,7 +30,7 @@ class AlbumStore extends DataStore {
 		await this.db.query(`
 			create table if not exists albums (
 				id serial primary key,
-				hid text,
+				hid text unique,
 				name text,
 				description text,
 				cover_url text

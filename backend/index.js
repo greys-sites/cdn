@@ -25,10 +25,11 @@ app.upload = multer({
 const TOKEN = process.env.ACCESS_TOKEN; // for api
 
 app.auth = (req, res, next) => {
+	console.log("authing req...")
 	var m = req.method;
 	if(m == 'POST' && !req.body) return next();
 	var ck = req.cookies?.user;
-	var tk = req.headers['authorization'] || ck.token;
+	var tk = req.headers['authorization'] ?? ck?.token;
 	if(!tk || tk !== TOKEN) {
 		switch(m) {
 			case 'GET':
@@ -40,6 +41,7 @@ app.auth = (req, res, next) => {
 		}
 	}
 
+	console.log("req authed");
 	next();
 }
 

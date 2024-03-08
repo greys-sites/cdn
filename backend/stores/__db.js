@@ -6,9 +6,9 @@ module.exports = async (app) => {
 	const db = new Pool();
 
 	await db.query(`
-		CREATE OR REPLACE FUNCTION gen_hid() RETURNS TEXT AS
-			'select lower(substr(md5(random()::text), 0, 5));'
-		LANGUAGE SQL VOLATILE;
+		CREATE OR REPLACE FUNCTION gen_hid() RETURNS TEXT AS $$
+			select string_agg(substr('abcdefghijklmnopqrstuvwxyz0123456789', ceil(random() * 36)::integer, 1), '') from generate_series(1, 5)
+		$$ LANGUAGE SQL VOLATILE;
 		
 		CREATE OR REPLACE FUNCTION find_unique(_tbl regclass) RETURNS TEXT AS $$
 			DECLARE nhid TEXT;

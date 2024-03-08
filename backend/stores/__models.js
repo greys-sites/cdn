@@ -18,6 +18,7 @@ class DataObject {
 		var {
 			store,
 			KEYS,
+			old,
 			...rest
 		} = this;
 
@@ -84,6 +85,16 @@ class DataStore {
 
 	[util.inspect.custom](depth, opts) {
 		var {app, db, ...rest} = this;
+
+		return rest;
+	}
+
+	toJSON() {
+		var {
+			app,
+			db,
+			...rest
+		} = this;
 
 		return rest;
 	}

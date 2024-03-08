@@ -2,7 +2,7 @@ const { DataObject, DataStore } = require("./__models");
 
 const KEYS = {
 	id: { },
-	hid: { },
+	hid: { patch: true },
 	name: { patch: true },
 	description: { patch: true },
 	cover_url: { patch: true }
@@ -45,9 +45,9 @@ class AlbumStore extends DataStore {
 				name,
 				description,
 				cover_url
-			) VALUES (find_unique('albums'), $1,$2,$3)
+			) VALUES ((select coalesce($1,find_unique('albums'))), $2,$3,$4)
 			returning *`,
-			[data.name, data.description, data.cover_url])
+			[data.hid ?? null, data.name, data.description, data.cover_url])
 		} catch(e) {
 			console.log(e);
 	 		return Promise.reject(e.message);
@@ -89,7 +89,7 @@ class AlbumStore extends DataStore {
 		}
 		
 		if(data.rows?.length) return data.rows.map(x => new Album(this, KEYS, x));
-		else return undefined;
+		else return [];
 	}
 
 	async update(id, data = {}) {

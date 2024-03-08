@@ -2,15 +2,19 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 
+	import Album from '$lib/components/album.svelte';
+	import Card from '$lib/components/card.svelte';
+
 	export let form;
 	export let data;
 
+	let albums = [];
 	let images = [];
 	let API = '';
 
 	$: if(form?.id == "login" && form?.success) goto('/dash');
-	$: if(data?.images) images = data.images;
-	$: if(images?.length) console.log(images);
+	$: if(data?.albums) albums = data.albums;
+	$: if(data?.images) images = data.images.filter(x => !x.album || !albums.find(a => a.hid == x.album));
 	$: if(data?.API) API = data.API;
 </script>
 
@@ -24,31 +28,47 @@
 {:else}
 	<h1>Dashboard</h1>
 
-	<div class="upload-form">
+	<div>
+		<h2>Upload Images</h2>
 		<form action="?/upload" method="POST" enctype="multipart/form-data" use:enhance >
 		  <label>Select image(s) to upload:
 		  <input name="files" id="files" type="file" multiple>
+		  </label>
+		  <br>
+		  <label>Enter an album ID:
+		  <input name="album" id="album" type="text">
 		  </label>
 		  <br>
 		  <input value="UPLOAD" name="submit" type="submit">
 		</form>
 	</div>
 
+	<div>
+		<h2>Create Album</h2>
+		<form action="?/create-album" method="POST" enctype="multipart/form-data" use:enhance >
+		  <label>Album name:
+		  <input name="name" id="name" type="text" placeholder="name">
+		  </label>
+		  <br>
+		  <label>Album hid:
+		  <input name="hid" id="hid" type="text" placeholder="hid">
+		  </label>
+		  <br>
+		  <input value="CREATE" name="submit" type="submit">
+		</form>
+	</div>
+
+	<h2>Albums</h2>
+	<div class="album-container">
+		{#each albums as alb (alb.hid)}
+			<Album {alb} {API} />
+		{/each}
+	</div>
+
+	<h2>Unsorted Images</h2>
 	<div class="image-container">
 		{#each images as img (img.hid)}
-			<form class='card' method="post" action="?/delimg" use:enhance>
-				<input type="hidden" name="hid" id="hid" value={img.hid}>
-				<div class='wrapper' style="background-image: url('{API}/{img.hid}.{img.mime}')">
-					<div class='info'>
-						<h2>{img.name}</h2>
-						<div class='btns'>
-							<a href={`${API}/${img.hid}.${img.mime}`}>View</a>
-							<a href={`/edit/${img.hid}`}>Edit</a>
-							<input class="btn" type="submit" value="Delete" />
-						</div>
-					</div>
-				</div>
-			</form>
+			<Card {img} {API} />
 		{/each}
 	</div>
 {/if}
@@ -58,81 +78,29 @@
 		box-sizing: border-box;
 	}
 
-	html, body {
+	div {
+		text-align: center;
+	}
+
+	.album-container, .image-container {
 		background: #202020;
 		color: #ccc;
 		height: 100%;
-		width: 100%;
+		width: 90%;
 		display: flex;
 		text-align: center;
 		justify-content: center;
 		flex-direction: row;
 		flex-wrap: wrap;
-	}
-
-	.card {
-		width: 300px;
-		height: 300px;
-		margin: 10px;
-		padding: 0;
-		display: inline-block;
-		position: relative;
-		border-radius: 5px;
-		flex: 1 0;
-	}
-
-	.card .wrapper {
-		width: 300px;
-		height: 300px;
-		padding: 0;
-		margin: 0;
-		object-fit: cover;
-		object-position: center;
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
-		display: inline-block;
-		top: 0;
-		left: 0;
 		border-radius: 5px;
 	}
 
-
-
-	.card .info {
-		width: 300px;
-		height: 100px;
-		flex: 1 0;
-		margin: 0;
-		padding: 0;
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;
-		background-color: #111;
+	form {
 		display: flex;
-		flex-direction: column;
-		align-items: space-around;
+		text-align: center;
 		justify-content: center;
-		position: absolute;
-		bottom: 0;
-	}
-
-	.card .btns {
-		width: 300px;
-		display: flex;
-		flex-direction: row;
 		align-items: center;
-		justify-content: space-around;
-	}
-
-	.btns a, .btn {
-		margin: 0;
-		padding: 10px;
-		background-color: teal;
-		text-decoration: none;
-		border: 0px solid transparent;
-		border-radius: 5px;
-		color: white;
-		font-weight: bold;
+		flex-direction: column;
 	}
 
 	h2 {

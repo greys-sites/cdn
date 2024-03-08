@@ -2,10 +2,11 @@ const { DataObject, DataStore } = require("./__models");
 
 const KEYS = {
 	id: { },
-	hid: { },
+	hid: { patch: true },
 	name: { patch: true },
 	description: { patch: true },
-	mime: { }
+	mime: { },
+	album: { patch: true }
 }
 
 class Image extends DataObject {
@@ -34,7 +35,7 @@ class ImageStore extends DataStore {
 				name text,
 				description text,
 				mime text,
-				album text references albums(hid) on delete set NULL
+				album text
 			)
 		`)
 	}
@@ -47,9 +48,9 @@ class ImageStore extends DataStore {
 				description,
 				mime,
 				album
-			) VALUES (find_unique('images'), $1,$2,$3,$4)
+			) VALUES ((select coalesce($1,find_unique('images'))), $2,$3,$4,$5)
 			returning *`,
-			[data.name, data.description, data.mime, data.album])
+			[data.hid ?? null, data.name, data.description, data.mime, data.album])
 		} catch(e) {
 			console.log(e);
 	 		return Promise.reject(e.message);
@@ -91,7 +92,7 @@ class ImageStore extends DataStore {
 		}
 		
 		if(data.rows?.length) return data.rows.map(x => new Image(this, KEYS, x));
-		else return undefined;
+		else return [];
 	}
 
 	async getByHids(hids) {
@@ -115,7 +116,7 @@ class ImageStore extends DataStore {
 		}
 		
 		if(data.rows?.length) return data.rows.map(x => new Image(this, KEYS, x));
-		else return undefined;
+		else return [];
 	}
 
 	async update(id, data = {}) {

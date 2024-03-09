@@ -82,15 +82,16 @@ export const actions = {
 		}
 	},
 	
-	upload: async ({ cookies, request }) => {
+	upload: async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 
 		try {
-			var res = await axios.post(API + "/api/upload", d, {
+			var res = await fetch("/api/images", {
+				method: 'POST',
+				body: d,
 				headers: {
-					Authorization: token,
-					"Content-Type": "multipart/form-data"
+					Authorization: token
 				}
 			})
 		} catch(e) {
@@ -102,7 +103,7 @@ export const actions = {
 			})
 		}
 
-		if(res) res = res.data;
+		if(res) res = await res.json();
 		console.log(res)
 		return { id: 'upload', success: true, created: res };
 	},

@@ -2,7 +2,8 @@ const fs = require('fs');
 const MIME_MAP = {
 	'image/jpeg': 'jpeg',
 	'image/gif': 'gif',
-	'image/png': 'png'
+	'image/png': 'png',
+	'image/webp': 'webp'
 }
 
 module.exports = (app) => {

@@ -27,12 +27,12 @@ export async function load({ cookies, fetch }) {
 		})
 		if(r) images = await r.json();
 
-		r = await axios.get(API + '/api/albums', {
+		r = await fetch('/api/albums', {
 			headers: {
 				'Authorization': u
 			}
 		})
-		if(r) albums = r.data;
+		if(r) albums = await r.json();
 	} catch(e) {
 		console.log(e.response ?? e);
 		switch(e.response?.status) {
@@ -107,7 +107,7 @@ export const actions = {
 		console.log(res)
 		return { id: 'upload', success: true, created: res };
 	},
-	'create-album': async ({ cookies, request }) => {
+	'create-album': async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 
@@ -118,12 +118,14 @@ export const actions = {
 		var cover_url = d.get('cover_url');
 
 		try {
-			var res = await axios.post(API + "/api/albums", {
-				hid,
-				name,
-				description,
-				cover_url
-			}, {
+			var res = await fetch("/api/albums", {
+				method: "POST",
+				body: {
+					hid,
+					name,
+					description,
+					cover_url
+				},
 				headers: {
 					Authorization: token
 				}
@@ -137,18 +139,19 @@ export const actions = {
 			})
 		}
 
-		if(res) res = res.data;
+		if(res) res = await res.json();
 		console.log(res)
 		return { id: 'create-album', success: true, created: res };
 	},
 	
-	delimg: async ({ cookies, request }) => {
+	delimg: async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 		var hid = d.get("hid");
 
 		try {
-			var res = await axios.post(API + `/api/delete/${hid}`, null, {
+			var res = await fetch(`/api/delete/${hid}`, {
+				method: "DELETE",
 				headers: {
 					Authorization: token
 				}
@@ -162,17 +165,18 @@ export const actions = {
 			})
 		}
 
-		if(res) res = res.data;
+		if(res) res = await res.json();
 		console.log(res)
 		return { id: 'delete-image', success: true, deleted: hid };
 	},
-	delalb: async ({ cookies, request }) => {
+	delalb: async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 		var hid = d.get("hid");
 
 		try {
-			var res = await axios.post(API + `/api/albums/delete/${hid}`, null, {
+			var res = await axios.post(`/api/albums/delete/${hid}`, {
+				method: "DELETE",
 				headers: {
 					Authorization: token
 				}
@@ -186,24 +190,26 @@ export const actions = {
 			})
 		}
 
-		if(res) res = res.data;
+		if(res) res = await res.json();
 		console.log(res)
 		return { id: 'delete-album', success: true, deleted: hid };
 	},
 	
-	editimg: async ({ cookies, request }) => {
+	editimg: async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 		var hid = d.get("oldhid");
 		var newhid = d.get("newhid");
 
 		try {
-			var res = await axios.patch(API + `/api/images/${hid}`, {
-				hid: newhid ?? hid,
-				name: d.get('name'),
-				description: d.get('description'),
-				album: d.get('album')
-			}, {
+			var res = await fetch(`/api/images/${hid}`, {
+				method: "PATCH",
+				body: {
+					hid: newhid ?? hid,
+					name: d.get('name'),
+					description: d.get('description'),
+					album: d.get('album')
+				},
 				headers: {
 					Authorization: token
 				}
@@ -221,18 +227,20 @@ export const actions = {
 		console.log(res)
 		return { id: 'editimg', success: true, data: res };
 	},
-	editalb: async ({ cookies, request }) => {
+	editalb: async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 		var hid = d.get("oldhid");
 
 		try {
-			var res = await axios.patch(API + `/api/albums/${hid}`, {
-				hid: d.get('newhid') ?? hid,
-				name: d.get('name'),
-				description: d.get('description'),
-				cover_url: d.get('cover_url')
-			}, {
+			var res = await fetch(`/api/albums/${hid}`, {
+				method: "PATCH",
+				body: {
+					hid: d.get('hid') ?? hid,
+					name: d.get('name'),
+					description: d.get('description'),
+					cover_url: d.get('cover_url')
+				},
 				headers: {
 					Authorization: token
 				}

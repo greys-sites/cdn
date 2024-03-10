@@ -30,7 +30,7 @@
 		<div class='wrapper' style="background-image: url('{alb.cover_url}')">
 		</div>
 		<div class='info'>
-			<input type="text" value={alb.hid} id="newhid" name="newhid" placeholder="hid">
+			<input type="text" value={alb.hid} id="hid" name="hid" placeholder="hid">
 			<input type="text" value={alb.name} id="name" name="name" placeholder="name">
 			<input type="text" value={alb.cover_url} id="cover_url" name="cover_url" placeholder="cover url">
 			<textarea rows=10 id="description" name="description" placeholder="description"></textarea>
@@ -43,7 +43,7 @@
 {:else}
 	<form class='card' method="post" action="/dash?/delalb" use:enhance>
 		<input type="hidden" name="hid" id="hid" value={alb.hid}>
-		<div class='wrapper' style="background-image: url('{alb.cover_url ?? '/default.png'}')">
+		<div class='wrapper' style="background-image: url('{alb.cover_url}')">
 		</div>
 		<div class='info'>
 			<h2>{alb.name}</h2>

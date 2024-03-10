@@ -1,6 +1,8 @@
 import { DataObject, DataStore } from "./_models";
 import pool from './_db';
 
+import Albums from './albums';
+
 const KEYS = {
 	id: { },
 	hid: { patch: true },
@@ -16,7 +18,7 @@ class Image extends DataObject {
 	}
 
 	async getAlbum() {
-		var album = await this.store.app.stores.albums.get(this.album);
+		var album = await Albums.get(this.album);
 		this.fetched.album = album;
 
 		return album;

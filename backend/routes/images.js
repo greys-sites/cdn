@@ -62,7 +62,12 @@ module.exports = (app) => {
 		if(!image?.id) return res.status(404).send('Image not found.');
 
 		await image.delete();
-		await fs.unlinkSync(`${__dirname}/../files/${image.hid}.${image.mime}`);
+		try {
+			await fs.unlinkSync(`${__dirname}/../files/${image.hid}.${image.mime}`);
+		} catch(e) {
+			console.log(e.message ?? e);
+		}
+
 		res.status(200).send();
 	})
 

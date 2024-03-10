@@ -27,10 +27,10 @@
 {#if editing}
 	<form class='card-edit' method="post" action="/dash?/editimg" use:enhance>
 		<input type="hidden" value={img.hid} name="oldhid" id="oldhid">
-		<div class='wrapper' style="background-image: url('{API}/{img.hid}.{img.mime}')">
+		<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 		</div>
 		<div class='info'>
-			<input type="text" value={img.hid} id="newhid" name="newhid" placeholder="hid">
+			<input type="text" value={img.hid} id="hid" name="hid" placeholder="hid">
 			<input type="text" value={img.name} id="name" name="name" placeholder="name">
 			<input type="text" value={img.album} id="album" name="album" placeholder="album hid">
 			<textarea rows=10 id="description" name="description" placeholder="description"></textarea>
@@ -43,12 +43,12 @@
 {:else}
 	<form class='card' method="post" action="/dash?/delimg" use:enhance>
 		<input type="hidden" name="hid" id="hid" value={img.hid}>
-		<div class='wrapper' style="background-image: url('{API}/{img.hid}.{img.mime}')">
+		<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 		</div>
 		<div class='info'>
 			<h2>{img.name}</h2>
 			<div class='btns'>
-				<a href={`${API}/${img.hid}.${img.mime}`}>View</a>
+				<a href={`/img/${img.hid}.${img.mime}`}>View</a>
 				<div class="btn" on:click={toggle}>Edit</div>
 				<input class="btn" type="submit" value="Delete" />
 			</div>

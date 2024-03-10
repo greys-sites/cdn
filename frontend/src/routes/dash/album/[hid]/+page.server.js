@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import axios from 'axios';
 import { API } from '$env/static/private';
 
-export async function load({ cookies, params }) {
+export async function load({ cookies, params, fetch }) {
 	var u = cookies.get('user');
 	if(!u) {
 		return { user: null }
@@ -33,12 +33,12 @@ export async function load({ cookies, params }) {
 	}
 
 	try {
-		var r = await axios.get(`${API}/api/albums/${params.hid}`, {
+		var r = await fetch(`/api/albums/${params.hid}`, {
 			headers: {
 				'Authorization': u
 			}
 		})
-		if(r) album = r.data;
+		if(r) album = await r.json();
 	} catch(e) {
 		console.log(e.response ?? e);
 		switch(e.response?.status) {

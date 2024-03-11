@@ -46,7 +46,7 @@ export async function DELETE({ request, params, locals }) {
 	try {
 		await unlink(`${FILES}/${image.hid}.${image.mime}`)
 	} catch(e) {
-		console.log(e);
+		console.log(e.message ?? e);
 	}
 	return json({});
 }

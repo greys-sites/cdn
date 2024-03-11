@@ -23,11 +23,18 @@ export async function POST({ request, locals }) {
 	var descs = JSON.parse(fd.get('descs')) ?? [];
 	var album = fd.get('album') ?? null; 
 
-	var imgs = []
+	var imgs = [];
+	var errs = [];
 	for(var i = 0; i < files.length; i++) {
 		var f = files[i];
 		var name = f.name;
 		var mime = MIME_MAP[f.type];
+
+		var exists = await Images.get(hids[i]);
+		if(exists?.id) {
+			errs.push({ name, err: `hid ${hids[i]} is already in use.`});
+			continue;
+		}
 
 		var img = await Images.create({
 			name,
@@ -42,7 +49,7 @@ export async function POST({ request, locals }) {
 		imgs.push(img);
 	}
 
-	return json(imgs);
+	return json({ created: imgs, errors: errs });
 }
 
 export async function GET({ request, locals }) {

@@ -50,7 +50,7 @@ export const actions = {
 		var token = d.get('token');
 
 		try {
-			var u = await fetch('/login', {
+			var u = await fetch('/api/login', {
 				method: "POST",
 				body: JSON.stringify({token})
 			});

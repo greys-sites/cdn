@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	
 	export let img;
-	export let API;
 
 	$: if($page.form) {
 		if(

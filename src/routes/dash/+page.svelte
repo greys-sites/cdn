@@ -10,12 +10,10 @@
 
 	let albums = [];
 	let images = [];
-	let API = '';
 
 	$: if(form?.id == "login" && form?.success) goto('/dash');
 	$: if(data?.albums) albums = data.albums;
 	$: if(data?.images) images = data.images.filter(x => !x.album || !albums.find(a => a.hid == x.album));
-	$: if(data?.API) API = data.API;
 </script>
 
 {#if !data?.user}
@@ -61,14 +59,14 @@
 	<h2>Albums</h2>
 	<div class="album-container">
 		{#each albums as alb (alb.hid)}
-			<Album {alb} {API} frm={form}/>
+			<Album {alb} frm={form}/>
 		{/each}
 	</div>
 
 	<h2>Unsorted Images</h2>
 	<div class="image-container">
 		{#each images as img (img.hid)}
-			<Card {img} {API} frm={form}/>
+			<Card {img} frm={form}/>
 		{/each}
 	</div>
 {/if}

@@ -9,14 +9,12 @@
 
 	let album = {};
 	let images = [];
-	let API = '';
 
 	$: if(!data.user) goto('/dash');
 	$: if(data?.album) {
 		album = data.album;
 		images = data.album.images ?? [];
 	}
-	$: if(data?.API) API = data.API;
 </script>
 
 <h1>Dashboard</h1>
@@ -42,7 +40,7 @@
 <h2>Images</h2>
 <div class="image-container">
 	{#each images as img (img.hid)}
-		<Card {img} {API} />
+		<Card {img} />
 	{/each}
 </div>
 

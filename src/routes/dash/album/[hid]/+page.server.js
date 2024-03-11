@@ -1,6 +1,4 @@
 import { fail, redirect } from '@sveltejs/kit';
-import axios from 'axios';
-import { API } from '$env/static/private';
 
 export async function load({ cookies, params, fetch, locals }) {
 	if(!locals.verified) {
@@ -31,7 +29,7 @@ export async function load({ cookies, params, fetch, locals }) {
 		}
 	}
 
-	return { user: u, album, API };
+	return { user: u, album };
 }
 
 export const actions = {	

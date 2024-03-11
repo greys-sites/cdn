@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 
 	export let alb;
-	export let API;
 	export let frm;
 
 

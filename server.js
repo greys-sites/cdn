@@ -4,7 +4,7 @@ import express from 'express';
 
 const app = express();
 
-const PORT = process.env.FRONT_PORT ?? 3000;
+const PORT = process.env.PORT ?? 3000;
 
 app.use(handler);
 app.listen(PORT);

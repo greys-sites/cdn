@@ -3,6 +3,13 @@ import { error, json } from '@sveltejs/kit';
 
 import { FILES } from '$lib/constants.js';
 
+const MIME_MAP = {
+	'jpeg': 'image/jpeg',
+	'gif': 'image/gif',
+	'png': 'image/png',
+	'webp': 'image/webp' 
+}
+
 export async function GET({ request, params, locals }) {
 	// if(!locals?.verified) return [];
 
@@ -15,5 +22,12 @@ export async function GET({ request, params, locals }) {
 		console.log(e);
 	}
 
-	return new Response(file);
+	var ct = MIME_MAP[Object.keys(MIME_MAP).filter(x => file.endsWith(x))];
+
+	return new Response(file, {
+		status: 200,
+		headers: {
+			'Content-Type': ct
+		}
+	});
 }

@@ -22,7 +22,7 @@ export async function GET({ request, params, locals }) {
 		console.log(e);
 	}
 
-	var ct = MIME_MAP[Object.keys(MIME_MAP).filter(x => file.endsWith(x))];
+	var ct = MIME_MAP[Object.keys(MIME_MAP).filter(x => f.endsWith(x))];
 
 	return new Response(file, {
 		status: 200,

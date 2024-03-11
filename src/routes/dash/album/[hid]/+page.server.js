@@ -62,7 +62,7 @@ export const actions = {
 		var d = await request.formData();
 		var token = cookies.get('user');
 		var hid = d.get("oldhid");
-		var newhid = d.get("newhid");
+		var newhid = d.get("hid");
 
 		try {
 			var res = await fetch(`/api/images/${hid}`, {

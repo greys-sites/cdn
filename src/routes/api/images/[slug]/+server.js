@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { unlink } from 'fs/promises';
+import { unlink, rename } from 'fs/promises';
 import { FILES } from '$lib/constants';
 
 import Images from '$lib/stores/images.js';
@@ -19,6 +19,15 @@ export async function PATCH({ request, params, locals }) {
 	img.hid = hid;
 	img.description = description;
 	img.album = album;
+
+	if(hid !== params.hid) {
+		try {
+			await rename(`${FILES}/${params.hid}.${img.mime}`, `${FILES}/${hid}.${img.mime}`);
+		} catch(e) {
+			console.log(e.message ?? e);
+			return error(500, "couldn't rename file");
+		}
+	}
 
 	await img.save();
 

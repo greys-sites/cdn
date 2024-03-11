@@ -8,4 +8,5 @@ export async function POST({ request, cookies }) {
 	if(b.token != TOKEN) return error(403, "invalid login.");
 
 	cookies.set('user', TOKEN, { path: '/' });
+	return json({});
 }

@@ -2,24 +2,19 @@ import { fail, redirect } from '@sveltejs/kit';
 import axios from 'axios';
 import { API } from '$env/static/private';
 
-export async function load({ cookies, fetch }) {
-	var u = cookies.get('user');
-	if(!u) {
-		return { user: null }
+export async function load({ cookies, fetch, locals }) {
+	if(!locals.verified) {
+		cookies.delete('user', { path: "/" });
+		return { user: null };
 	}
+
+	var u = cookies.get('user');
 
 	var images = [];
 	var albums = [];
 
 	var d;
 	try {
-		d = await axios.get(API + `/verify`, {
-			headers: {
-				'Authorization': u
-			}
-		})
-		d = d.data;
-
 		var r = await fetch('/api/images', {
 			headers: {
 				'Authorization': u
@@ -52,13 +47,14 @@ export async function load({ cookies, fetch }) {
 }
 
 export const actions = {
-	login: async ({ cookies, request }) => {
+	login: async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = d.get('token');
 
 		try {
-			var u = await axios.post(API + '/login', {
-				token
+			var u = await fetch('/login', {
+				method: "POST",
+				body: JSON.stringify({token})
 			});
 
 			if(u) {
@@ -120,14 +116,15 @@ export const actions = {
 		try {
 			var res = await fetch("/api/albums", {
 				method: "POST",
-				body: {
+				body: JSON.stringify({
 					hid,
 					name,
 					description,
 					cover_url
-				},
+				}),
 				headers: {
-					Authorization: token
+					Authorization: token,
+					'Content-Type': 'application/json'
 				}
 			})
 		} catch(e) {
@@ -150,7 +147,7 @@ export const actions = {
 		var hid = d.get("hid");
 
 		try {
-			var res = await fetch(`/api/delete/${hid}`, {
+			var res = await fetch(`/api/images/${hid}`, {
 				method: "DELETE",
 				headers: {
 					Authorization: token
@@ -175,7 +172,7 @@ export const actions = {
 		var hid = d.get("hid");
 
 		try {
-			var res = await axios.post(`/api/albums/delete/${hid}`, {
+			var res = await fetch(`/api/albums/${hid}`, {
 				method: "DELETE",
 				headers: {
 					Authorization: token
@@ -204,14 +201,15 @@ export const actions = {
 		try {
 			var res = await fetch(`/api/images/${hid}`, {
 				method: "PATCH",
-				body: {
+				body: JSON.stringify({
 					hid: newhid ?? hid,
 					name: d.get('name'),
 					description: d.get('description'),
 					album: d.get('album')
-				},
+				}),
 				headers: {
-					Authorization: token
+					Authorization: token,
+					'Content-Type': 'application/json'
 				}
 			})
 		} catch(e) {
@@ -223,7 +221,7 @@ export const actions = {
 			})
 		}
 
-		if(res) res = res.data;
+		if(res) res = await res.json();
 		console.log(res)
 		return { id: 'editimg', success: true, data: res };
 	},
@@ -235,14 +233,15 @@ export const actions = {
 		try {
 			var res = await fetch(`/api/albums/${hid}`, {
 				method: "PATCH",
-				body: {
+				body: JSON.stringify({
 					hid: d.get('hid') ?? hid,
 					name: d.get('name'),
 					description: d.get('description'),
 					cover_url: d.get('cover_url')
-				},
+				}),
 				headers: {
-					Authorization: token
+					Authorization: token,
+					'Content-Type': 'application/json'
 				}
 			})
 		} catch(e) {
@@ -254,8 +253,8 @@ export const actions = {
 			})
 		}
 
-		if(res) res = res.data;
-		console.log(res)
+		if(res) res = await res.json();
+		console.log("edited album data", res)
 		return { id: 'editalb', success: true, data: res };
 	},
 }

@@ -4,12 +4,12 @@ import Albums from '$lib/stores/albums.js';
 
 export async function POST({ request, locals }) {
 	if(!locals?.verified) return error(401, "Unauthorized.");
-		
-	var fd = await request.formData();
-	var name = fd.get('name') ?? 'Untitled';
-	var hid = fd.get('hid') ?? null;
-	var description = fd.get('description') ?? null;
-	var cover_url = fd.get('cover_url') ?? null;
+
+	var fd = await request.json();
+	var name = fd.name ?? 'Untitled Album';
+	var hid = fd.hid ?? null;
+	var description = fd.description ?? null;
+	var cover_url = fd.cover_url ?? null;
 
 	var album = await Albums.create({
 		hid,
@@ -22,7 +22,7 @@ export async function POST({ request, locals }) {
 }
 
 export async function GET({ request, locals }) {
-	if(!locals?.verified) return [];
+	if(!locals?.verified) return error(401, "Unauthorized.");
 
 	var albums = await Albums.getAll();
 

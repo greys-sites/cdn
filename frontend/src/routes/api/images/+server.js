@@ -1,5 +1,4 @@
 import { error, json } from '@sveltejs/kit';
-import { API_TOKEN as TOKEN } from '$env/static/private';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 
@@ -49,7 +48,7 @@ export async function POST({ request, locals }) {
 }
 
 export async function GET({ request, locals }) {
-	if(!locals?.verified) return [];
+	if(!locals?.verified) return error(401, "Unauthorized.");
 
 	var images = await Images.getAll();
 

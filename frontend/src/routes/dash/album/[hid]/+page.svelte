@@ -21,6 +21,7 @@
 </script>
 
 <h1>Dashboard</h1>
+<a class="btn" href="/dash">Go Back</a>
 
 <h2>Upload Images</h2>
 <form action="/dash?/upload" method="POST" enctype="multipart/form-data" use:enhance >
@@ -82,6 +83,17 @@
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
+	}
+
+	.btn {
+		margin: 0;
+		padding: 10px;
+		background-color: teal;
+		text-decoration: none;
+		border: 0px solid transparent;
+		border-radius: 5px;
+		color: white;
+		font-weight: bold;
 	}
 
 	h2 {

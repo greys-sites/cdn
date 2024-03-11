@@ -2,35 +2,15 @@ import { fail, redirect } from '@sveltejs/kit';
 import axios from 'axios';
 import { API } from '$env/static/private';
 
-export async function load({ cookies, params, fetch }) {
-	var u = cookies.get('user');
-	if(!u) {
-		return { user: null }
+export async function load({ cookies, params, fetch, locals }) {
+	if(!locals.verified) {
+		cookies.delete('user', { path: "/" });
+		return redirect(307, '/dash');
 	}
+
+	var u = cookies.get('user');
 
 	var album = {}
-
-	var d;
-	try {
-		d = await axios.get(API + `/verify`, {
-			headers: {
-				'Authorization': u
-			}
-		})
-		d = d.data;
-	} catch(e) {
-		console.log(e.response ?? e);
-		switch(e.response?.status) {
-			case 401:
-			case 404:
-				cookies.delete('user', { path: "/" });
-				d = null;
-				break;
-			default:
-				d = null;
-				break;
-		}
-	}
 
 	try {
 		var r = await fetch(`/api/albums/${params.hid}`, {

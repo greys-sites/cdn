@@ -7,11 +7,11 @@ export async function PATCH({ request, params, locals }) {
 	var img = await Images.get(params.slug);
 	if(!img) return error(404, "image not found.");
 
-	var fd = await request.formData();;
-	var name = fd.get('name') ?? img.name;
-	var hid = fd.get('hid') ?? img.hid;
-	var description = fd.get('description') ?? img.description;
-	var album = fd.get('album') ?? img.album ?? null;
+	var fd = await request.json();
+	var name = fd.name ?? img.name;
+	var hid = fd.hid ?? img.hid;
+	var description = fd.description ?? img.description;
+	var album = fd.album ?? img.album ?? null;
 
 	img.name = name;
 	img.hid = hid;

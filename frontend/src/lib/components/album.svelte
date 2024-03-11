@@ -1,21 +1,29 @@
 <script>
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	
+
+	export let form;
+
 	export let alb;
 	export let API;
+	export let frm;
 
-	$: if($page.form) {
-		console.log($page.form);
+	$: console.log(form, $page.form);
+	$: if($page) console.log($page);
+
+	$: if(form) {
+		console.log('form:', form);
 		if(
-			$page.form.success &&
-			$page.form.id == 'editalb' &&
-			$page.form.data?.hid == alb.hid
+			form.success &&
+			form.id == 'editalb' &&
+			form.data?.hid == alb.hid
 		) {
 			editing = false;
-			alb = $page.form.data;
+			alb = form.data;
 		}
 	}
+
+	$: if(form) console.log('form:', form)
 
 	let editing = false;
 

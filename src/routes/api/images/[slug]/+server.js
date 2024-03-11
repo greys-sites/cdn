@@ -1,4 +1,6 @@
 import { error, json } from '@sveltejs/kit';
+import { unlink } from 'fs/promises';
+import { FILES } from '$lib/constants';
 
 import Images from '$lib/stores/images.js';
 
@@ -41,5 +43,10 @@ export async function DELETE({ request, params, locals }) {
 	if(!image) return error(404, "image not found.");
 
 	await image.delete();
+	try {
+		await unlink(`${FILES}/${image.hid}.${image.mime}`)
+	} catch(e) {
+		console.log(e);
+	}
 	return json({});
 }

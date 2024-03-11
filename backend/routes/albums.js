@@ -55,8 +55,10 @@ module.exports = (app) => {
 			cover_url: cover
 		} = req.body;
 
+		console.log(hid. newhid);
 		if(newhid && newhid !== hid) {
 			var imgs = await alb.getImages();
+			console.log(imgs);
 			for(var img of imgs) {
 				img.album = newhid;
 				await img.save();

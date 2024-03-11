@@ -18,9 +18,7 @@ export async function POST({ request, locals }) {
 	if(!existsSync(FILES)) await mkdir(FILES);
 	
 	var fd = await request.formData();
-	console.log(fd);
 	var files = fd.getAll('files');
-	console.log(files)
 	var hids = JSON.parse(fd.get('hids')) ?? [];
 	var descs = JSON.parse(fd.get('descs')) ?? [];
 	var album = fd.get('album') ?? null; 
@@ -56,6 +54,5 @@ export async function GET({ request, locals }) {
 		img.path = `/img/${img.hid}.${img.mime}`;
 	}
 
-	// console.log(images);
 	return json(images);
 }

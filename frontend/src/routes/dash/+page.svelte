@@ -12,7 +12,6 @@
 	let images = [];
 	let API = '';
 
-	$: if(form) console.log(form);
 	$: if(form?.id == "login" && form?.success) goto('/dash');
 	$: if(data?.albums) albums = data.albums;
 	$: if(data?.images) images = data.images.filter(x => !x.album || !albums.find(a => a.hid == x.album));

@@ -7,7 +7,7 @@ export async function POST({ request, locals }) {
 
 	var fd = await request.json();
 	var name = fd.name ?? 'Untitled Album';
-	var hid = fd.hid ?? null;
+	var hid = fd.hid?.length ? fd.hid : null;
 	var description = fd.description ?? null;
 	var cover_url = fd.cover_url ?? null;
 

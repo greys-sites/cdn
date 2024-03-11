@@ -13,7 +13,6 @@
 
 	$: if(!data.user) goto('/dash');
 	$: if(data?.album) {
-		console.log(data.album)
 		album = data.album;
 		images = data.album.images ?? [];
 	}

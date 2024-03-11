@@ -31,7 +31,6 @@ export async function GET({ params, locals }) {
 
 	image.path = `/img/${image.hid}.${image.mime}`;
 
-	// console.log(images);
 	return json(image);
 }
 

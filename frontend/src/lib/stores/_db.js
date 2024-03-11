@@ -15,8 +15,6 @@ const pool = new pg.Pool({
 	database: PGDATABASE
 });
 
-console.log('_db.js was evaluated :)');
-
 async function setup() {
 	await pool.query(`
 		CREATE OR REPLACE FUNCTION gen_hid() RETURNS TEXT AS $$

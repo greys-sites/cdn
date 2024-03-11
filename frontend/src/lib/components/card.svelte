@@ -6,7 +6,6 @@
 	export let API;
 
 	$: if($page.form) {
-		console.log($page.form);
 		if(
 			$page.form.success &&
 			$page.form.id == 'editimg' &&
@@ -25,7 +24,7 @@
 </script>
 
 {#if editing}
-	<form class='card-edit' method="post" action="/dash?/editimg" use:enhance>
+	<form class='card-edit' method="post" action="?/editimg" use:enhance>
 		<input type="hidden" value={img.hid} name="oldhid" id="oldhid">
 		<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 		</div>
@@ -41,7 +40,7 @@
 		</div>
 	</form>
 {:else}
-	<form class='card' method="post" action="/dash?/delimg" use:enhance>
+	<form class='card' method="post" action="?/delimg" use:enhance>
 		<input type="hidden" name="hid" id="hid" value={img.hid}>
 		<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 		</div>

@@ -33,3 +33,63 @@ export async function load({ cookies, params, fetch, locals }) {
 
 	return { user: u, album, API };
 }
+
+export const actions = {	
+	delimg: async ({ cookies, request, fetch }) => {
+		var d = await request.formData();
+		var token = cookies.get('user');
+		var hid = d.get("hid");
+
+		try {
+			var res = await fetch(`/api/images/${hid}`, {
+				method: "DELETE",
+				headers: {
+					Authorization: token
+				}
+			})
+		} catch(e) {
+			console.log(e)
+			return fail(e.status ?? 500, {
+				success: false,
+				status: e.response?.status,
+				message: e.response?.data
+			})
+		}
+
+		if(res) res = await res.json();
+		return { id: 'delete-image', success: true, deleted: hid };
+	},
+	
+	editimg: async ({ cookies, request, fetch }) => {
+		var d = await request.formData();
+		var token = cookies.get('user');
+		var hid = d.get("oldhid");
+		var newhid = d.get("newhid");
+
+		try {
+			var res = await fetch(`/api/images/${hid}`, {
+				method: "PATCH",
+				body: JSON.stringify({
+					hid: newhid ?? hid,
+					name: d.get('name'),
+					description: d.get('description'),
+					album: d.get('album')
+				}),
+				headers: {
+					Authorization: token,
+					'Content-Type': 'application/json'
+				}
+			})
+		} catch(e) {
+			console.log(e)
+			return fail(e.status ?? 500, {
+				success: false,
+				status: e.response?.status,
+				message: e.response?.data
+			})
+		}
+
+		if(res) res = await res.json();
+		return { id: 'editimg', success: true, data: res };
+	}
+}

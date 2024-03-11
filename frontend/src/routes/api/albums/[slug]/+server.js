@@ -13,6 +13,14 @@ export async function PATCH({ request, params, locals }) {
 	var description = fd.description ?? alb.description;
 	var cover_url = fd.cover_url ?? alb.cover_url;
 
+	if(hid && hid !== alb.hid) {
+		var imgs = await alb.getImages();
+		for(var img of imgs) {
+			img.album = hid;
+			await img.save();
+		}
+	}
+
 	alb.name = name;
 	alb.hid = hid;
 	alb.description = description;

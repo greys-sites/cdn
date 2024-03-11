@@ -58,8 +58,7 @@ export const actions = {
 			});
 
 			if(u) {
-				u = u.data;
-				console.log(u);
+				u = await u.json();
 				cookies.set('user', token, {
 					path: '/'
 				});
@@ -100,14 +99,12 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
-		console.log(res)
 		return { id: 'upload', success: true, created: res };
 	},
 	'create-album': async ({ cookies, request, fetch }) => {
 		var d = await request.formData();
 		var token = cookies.get('user');
 
-		console.log(d);
 		var hid = d.get('hid');
 		var name = d.get('name');
 		var description = d.get('description');
@@ -137,7 +134,6 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
-		console.log(res)
 		return { id: 'create-album', success: true, created: res };
 	},
 	
@@ -163,7 +159,6 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
-		console.log(res)
 		return { id: 'delete-image', success: true, deleted: hid };
 	},
 	delalb: async ({ cookies, request, fetch }) => {
@@ -188,7 +183,6 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
-		console.log(res)
 		return { id: 'delete-album', success: true, deleted: hid };
 	},
 	
@@ -222,7 +216,6 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
-		console.log(res)
 		return { id: 'editimg', success: true, data: res };
 	},
 	editalb: async ({ cookies, request, fetch }) => {
@@ -254,7 +247,6 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
-		console.log("edited album data", res)
 		return { id: 'editalb', success: true, data: res };
 	},
 }

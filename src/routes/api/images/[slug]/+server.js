@@ -22,7 +22,7 @@ export async function PATCH({ request, params, locals }) {
 
 	if(hid !== params.hid) {
 		try {
-			await rename(`${FILES}/${params.hid}.${img.mime}`, `${FILES}/${hid}.${img.mime}`);
+			await rename(`${FILES}/${params.slug}.${img.mime}`, `${FILES}/${hid}.${img.mime}`);
 		} catch(e) {
 			console.log(e.message ?? e);
 			return error(500, "couldn't rename file");

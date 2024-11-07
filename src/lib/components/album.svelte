@@ -1,23 +1,27 @@
 <script>
+	import { run } from 'svelte/legacy';
+
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 
-	export let alb;
-	export let frm;
+	/** @type {{alb: any, frm: any}} */
+	let { alb = $bindable(), frm } = $props();
 
 
-	$: if($page.form) {
-		if(
-			$page.form.success &&
-			$page.form.id == 'editalb' &&
-			$page.form.data?.hid == alb.hid
-		) {
-			editing = false;
-			alb = $page.form.data;
+	run(() => {
+		if($page.form) {
+			if(
+				$page.form.success &&
+				$page.form.id == 'editalb' &&
+				$page.form.data?.hid == alb.hid
+			) {
+				editing = false;
+				alb = $page.form.data;
+			}
 		}
-	}
+	});
 
-	let editing = false;
+	let editing = $state(false);
 
 	function toggle() {
 		editing = !editing;
@@ -36,7 +40,7 @@
 			<textarea rows=10 id="description" name="description" placeholder="description"></textarea>
 			<div class='btns'>
 				<input class="btn" type="submit" value="SAVE" />
-				<div class="btn" on:click={toggle}>CANCEL</div>
+				<div class="btn" onclick={toggle}>CANCEL</div>
 			</div>
 		</div>
 	</form>
@@ -49,7 +53,7 @@
 			<h2>{alb.name}</h2>
 			<div class='btns'>
 				<a href={`/dash/album/${alb.hid}`}>View</a>
-				<div class="btn" on:click={toggle}>Edit</div>
+				<div class="btn" onclick={toggle}>Edit</div>
 				<input class="btn" type="submit" value="Delete" />
 			</div>
 		</div>

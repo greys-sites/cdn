@@ -1,24 +1,41 @@
 <script>
+	import { run } from 'svelte/legacy';
+
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	
-	export let img;
+	/** @type {{img: any}} */
+	let { img = $bindable() } = $props();
 
-	$: if($page.form) {
-		if(
-			$page.form.success &&
-			$page.form.id == 'editimg' &&
-			$page.form.data?.hid == img.hid
-		) {
-			editing = false;
-			img = $page.form.data;
+	$effect(() => {
+		if($page.form) {
+			if(
+				$page.form.success &&
+				$page.form.id == 'editimg' &&
+				$page.form.data?.hid == img.hid
+			) {
+				editing = false;
+				img = $page.form.data;
+			}
 		}
+	});
+
+	let editing = $state(false);
+	let deleting = $state(false);
+
+	function toggle(e) {
+		e.preventDefault();
+		editing = !editing;
 	}
 
-	let editing = false;
+	function setDelete(e) {
+		e.preventDefault();
+		deleting = true;
+	}
 
-	function toggle() {
-		editing = !editing;
+	function cancelDelete(e) {
+		e.preventDefault();
+		deleting = false;
 	}
 </script>
 
@@ -33,8 +50,8 @@
 			<input type="text" value={img.album} id="album" name="album" placeholder="album hid">
 			<textarea rows=10 id="description" name="description" placeholder="description"></textarea>
 			<div class='btns'>
-				<input class="btn" type="submit" value="SAVE" />
-				<div class="btn" on:click={toggle}>CANCEL</div>
+				<input class="btn" type="submit" value="Save" />
+				<div class="btn" onclick={toggle}>Cancel</div>
 			</div>
 		</div>
 	</form>
@@ -46,9 +63,14 @@
 		<div class='info'>
 			<h2>{img.name}</h2>
 			<div class='btns'>
-				<a href={`/img/${img.hid}.${img.mime}`}>View</a>
-				<div class="btn" on:click={toggle}>Edit</div>
-				<input class="btn" type="submit" value="Delete" />
+				{#if !deleting}
+					<a href={`/img/${img.hid}.${img.mime}`}>View</a>
+					<button onclick={toggle}>Edit</button>
+					<button onclick={setDelete}>Delete</button>
+				{:else}
+					<input class="btn" type="submit" value="Confirm" />
+					<button onclick={cancelDelete}>Cancel</button>
+				{/if}
 			</div>
 		</div>
 	</form>
@@ -129,7 +151,7 @@
 	justify-content: space-around;
 }
 
-.btns a, .btn {
+.btns a, .btn, button {
 	margin: 0;
 	padding: 10px;
 	background-color: teal;
@@ -138,6 +160,10 @@
 	border-radius: 5px;
 	color: white;
 	font-weight: bold;
+	font-family: Roboto;
+	text-transform: none;
+	font-size: 1em;
+	cursor: pointer;
 }
 
 h2 {

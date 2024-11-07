@@ -1,20 +1,20 @@
 <script>
+	import { run } from 'svelte/legacy';
+
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 
 	import Card from '$lib/components/card.svelte';
 
-	export let form;
-	export let data;
+	/** @type {{form: any, data: any}} */
+	let { form, data } = $props();
 
-	let album = {};
-	let images = [];
+	let album = $derived.by(() => data.album ?? {});
+	let images = $derived.by(() => data.album.images ?? []);
 
-	$: if(!data.user) goto('/dash');
-	$: if(data?.album) {
-		album = data.album;
-		images = data.album.images ?? [];
-	}
+	$effect(() => {
+		if(!data.user) goto('/dash');
+	});
 </script>
 
 <h1>Dashboard</h1>

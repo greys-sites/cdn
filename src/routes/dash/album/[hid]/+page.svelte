@@ -7,8 +7,8 @@
 	/** @type {{form: any, data: any}} */
 	let { form, data } = $props();
 
-	let album = $derived.by(() => data.album ?? {});
-	let images = $derived.by(() => data.album.images ?? []);
+	let album = $derived(data?.album ?? {});
+	let images = $derived(data?.album?.images ?? []);
 
 	$effect(() => {
 		if(!data.user) goto('/dash');
@@ -20,19 +20,19 @@
 
 <h2>Upload Images</h2>
 <form action="/dash?/upload" method="POST" enctype="multipart/form-data" use:enhance >
-  <input name="album" id="album" type="hidden" value={album.hid}>
+  <input name="album" id="album" type="hidden" value={album?.hid}>
   <label>Select image(s) to upload:
   <input name="files" id="files" type="file" multiple>
   </label>
   <br>
-  <input value="UPLOAD" name="submit" type="submit">
+  <input value="Upload" name="submit" type="submit">
 </form>
 
 <h2>Album Info</h2>
 <div class="album-container">
-	<p><b>Name:</b> {album.name}</p>
-	<p><b>Hid:</b> {album.hid}</p>
-	<p><b>Description:</b><br/>{album.description}</p>
+	<p><b>Name:</b> {album?.name}</p>
+	<p><b>Hid:</b> {album?.hid}</p>
+	<p><b>Description:</b><br/>{album?.description}</p>
 </div>
 
 <h2>Images</h2>

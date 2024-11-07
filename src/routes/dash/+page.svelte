@@ -9,7 +9,7 @@
 	let { form, data } = $props();
 
 	let albums = $derived.by(() => data?.albums ?? []);
-	let images = $derived.by(() => data.images.filter(x => !x.album || !albums.find(a => a.hid == x.album)) ?? []);
+	let images = $derived.by(() => data?.images?.filter(x => !x.album || !albums.find(a => a.hid == x.album)) ?? []);
 
 	$effect(() => {
 		if(form?.id == "login" && form?.success) goto('/dash');

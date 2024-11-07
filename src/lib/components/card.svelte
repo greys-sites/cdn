@@ -22,17 +22,17 @@
 	let deleting = $state(false);
 
 	function toggle(e) {
-		e.preventDefault();
+		e?.preventDefault();
 		editing = !editing;
 	}
 
 	function setDelete(e) {
-		e.preventDefault();
+		e?.preventDefault();
 		deleting = true;
 	}
 
 	function cancelDelete(e) {
-		e.preventDefault();
+		e?.preventDefault();
 		deleting = false;
 	}
 </script>
@@ -63,11 +63,11 @@
 			<div class='btns'>
 				{#if !deleting}
 					<a href={`/img/${img.hid}.${img.mime}`}>View</a>
-					<button onclick={toggle}>Edit</button>
-					<button onclick={setDelete}>Delete</button>
+					<button onclick={(e) => toggle(e)}>Edit</button>
+					<button onclick={(e) => setDelete(e)}>Delete</button>
 				{:else}
 					<input class="btn" type="submit" value="Confirm" />
-					<button onclick={cancelDelete}>Cancel</button>
+					<button onclick={(e) => cancelDelete(e)}>Cancel</button>
 				{/if}
 			</div>
 		</div>

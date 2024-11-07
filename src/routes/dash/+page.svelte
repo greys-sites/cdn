@@ -1,6 +1,4 @@
 <script>
-	import { run } from 'svelte/legacy';
-
 	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
 

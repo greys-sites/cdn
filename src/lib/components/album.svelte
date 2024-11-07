@@ -7,8 +7,7 @@
 	/** @type {{alb: any, frm: any}} */
 	let { alb = $bindable(), frm } = $props();
 
-
-	run(() => {
+	$effect(() => {
 		if($page.form) {
 			if(
 				$page.form.success &&
@@ -22,9 +21,20 @@
 	});
 
 	let editing = $state(false);
+	let deleting = $state(false);
 
 	function toggle() {
 		editing = !editing;
+	}
+
+	function setDelete(e) {
+		e.preventDefault();
+		deleting = true;
+	}
+
+	function cancelDelete(e) {
+		e.preventDefault();
+		deleting = false;
 	}
 </script>
 
@@ -39,8 +49,8 @@
 			<input type="text" value={alb.cover_url} id="cover_url" name="cover_url" placeholder="cover url">
 			<textarea rows=10 id="description" name="description" placeholder="description"></textarea>
 			<div class='btns'>
-				<input class="btn" type="submit" value="SAVE" />
-				<div class="btn" onclick={toggle}>CANCEL</div>
+				<input class="btn" type="submit" value="Save" />
+				<div class="btn" onclick={toggle}>Cancel</div>
 			</div>
 		</div>
 	</form>
@@ -52,9 +62,14 @@
 		<div class='info'>
 			<h2>{alb.name}</h2>
 			<div class='btns'>
-				<a href={`/dash/album/${alb.hid}`}>View</a>
-				<div class="btn" onclick={toggle}>Edit</div>
-				<input class="btn" type="submit" value="Delete" />
+				{#if !deleting}
+					<a href={`/dash/album/${alb.hid}`}>View</a>
+					<button onclick={toggle}>Edit</button>
+					<button onclick={setDelete}>Delete</button>
+				{:else}
+					<input class="btn" type="submit" value="Confirm" />
+					<button onclick={cancelDelete}>Cancel</button>
+				{/if}
 			</div>
 		</div>
 	</form>
@@ -135,7 +150,7 @@
 	justify-content: space-around;
 }
 
-.btns a, .btn {
+.btns a, .btn, button {
 	margin: 0;
 	padding: 10px;
 	background-color: teal;
@@ -144,6 +159,10 @@
 	border-radius: 5px;
 	color: white;
 	font-weight: bold;
+	font-family: Roboto;
+	text-transform: none;
+	font-size: 1em;
+	cursor: pointer;
 }
 
 h2 {

@@ -1,6 +1,13 @@
 <script>
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
+
+	import {
+		Button,
+		Input,
+		Label,
+		Textarea
+	} from 'flowbite-svelte';
 	
 	/** @type {{img: any}} */
 	let { img = $bindable() } = $props();
@@ -38,23 +45,27 @@
 </script>
 
 {#if editing}
-	<form class='card-edit' method="post" action="?/editimg" use:enhance>
+	<form class='card-edit bg-gray-300 dark:bg-gray-700' method="post" action="?/editimg" use:enhance>
 		<input type="hidden" value={img.hid} name="oldhid" id="oldhid">
 		<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 		</div>
 		<div class='info'>
-			<input type="text" value={img.hid} id="hid" name="hid" placeholder="hid">
-			<input type="text" value={img.name} id="name" name="name" placeholder="name">
-			<input type="text" value={img.album} id="album" name="album" placeholder="album hid">
-			<textarea rows=10 id="description" name="description" placeholder="description"></textarea>
+			<Input class="mb-2"
+				type="text" value={img.hid} id="hid" name="hid" placeholder="hid" />
+			<Input class="mb-2"
+				type="text" value={img.name} id="name" name="name" placeholder="name" />
+			<Input class="mb-2"
+				type="text" value={img.album} id="album" name="album" placeholder="album hid" />
+			<Textarea class="mb-2"
+				rows=10 id="description" name="description" placeholder="description" />
 			<div class='btns'>
-				<input class="btn" type="submit" value="Save" />
-				<div class="btn" onclick={toggle}>Cancel</div>
+				<Button type="submit">Save</Button>
+				<Button onclick={toggle}>Cancel</Button>
 			</div>
 		</div>
 	</form>
 {:else}
-	<form class='card' method="post" action="?/delimg" use:enhance>
+	<form class='card bg-gray-300 dark:bg-gray-700' method="post" action="?/delimg" use:enhance>
 		<input type="hidden" name="hid" id="hid" value={img.hid}>
 		<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 		</div>
@@ -62,12 +73,12 @@
 			<h2>{img.name}</h2>
 			<div class='btns'>
 				{#if !deleting}
-					<a href={`/img/${img.hid}.${img.mime}`}>View</a>
-					<button onclick={(e) => toggle(e)}>Edit</button>
-					<button onclick={(e) => setDelete(e)}>Delete</button>
+					<Button href={`/img/${img.hid}.${img.mime}`}>View</Button>
+					<Button onclick={(e) => toggle(e)}>Edit</Button>
+					<Button onclick={(e) => setDelete(e)}>Delete</Button>
 				{:else}
-					<input class="btn" type="submit" value="Confirm" />
-					<button onclick={(e) => cancelDelete(e)}>Cancel</button>
+					<Button type="submit">Confirm</Button>
+					<Button onclick={(e) => cancelDelete(e)}>Cancel</Button>
 				{/if}
 			</div>
 		</div>
@@ -76,7 +87,6 @@
 
 <style>
 .card, .card-edit {
-	background-color: #111;
 	max-width: 310px;
 	/*height: 300px;*/
 	margin: 10px;
@@ -147,21 +157,6 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
-}
-
-.btns a, .btn, button {
-	margin: 0;
-	padding: 10px;
-	background-color: teal;
-	text-decoration: none;
-	border: 0px solid transparent;
-	border-radius: 5px;
-	color: white;
-	font-weight: bold;
-	font-family: Roboto;
-	text-transform: none;
-	font-size: 1em;
-	cursor: pointer;
 }
 
 h2 {

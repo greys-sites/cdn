@@ -97,6 +97,8 @@ export const actions = {
 		}
 
 		if(res) res = await res.json();
+		console.log(res);
+		if(res.errors) return { id: 'upload', success: false, errors: res.errors }
 		return { id: 'upload', success: true, created: res };
 	},
 	'create-album': async ({ cookies, request, fetch }) => {

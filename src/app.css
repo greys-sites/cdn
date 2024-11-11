@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--accent: #b794f6;
+}
+
+* {
+	box-sizing: border-box;
+	font-family: Roboto;
+}
+
+html, body {
+	width: 100%;
+	padding-bottom: 1em;
+}
+
+body {
+	@apply bg-white;
+	@apply dark:bg-gray-900;
+	@apply text-black;
+	@apply dark:text-slate-400;
+	@apply relative;
+	margin: 0;
+	font-family: Roboto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.container {
+	@apply bg-gray-200;
+	@apply dark:bg-gray-800;
+	width: 90%;
+	margin: auto;
+	margin-top: 1vh;
+	margin-bottom: 1vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px;
+	border-radius: 10px;
+}
+
+.container p {
+	width: 70%;
+	opacity: .8;
+}
+
+.container h1 {
+	opacity: .8;
+}
+
+form {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	width: 100%;
+	max-width: 100%;
+}
+
+.toasts {
+	position: fixed;
+	top: 0;
+	right: 10px;
+	width: 200px;
+	display: flex;
+	flex-direction: column-reverse;
+	align-items: center;
+	justify-content: center;
+	margin-top: 50px;
+}
+
+.body img {
+	max-width: 100%;
+	height: auto;
+}
+
+@media(max-width: 700px) {
+	form {
+		flex-direction: column;
+	}
+
+	.container p {
+		width: 100%;
+	}
+}

@@ -2,10 +2,28 @@
   import "../app.css";
 
   import {
-  	DarkMode
+  	DarkMode,
+  	Button,
+  	Modal,
+  	Helper,
+	Input,
+	Select
   } from 'flowbite-svelte';
 
+  import SettingsIcon from '~icons/ic/round-settings';
+
+  import { settings, update } from '$lib/stores/settings';
+
+  import SettingsModal from '$lib/components/settings.svelte';
+
   let { children } = $props();
+
+  let open = $state(false);
+
+  let toggle = (e) => {
+  	e.preventDefault()
+  	open = true;
+  }
 </script>
 
 <svelte:head>
@@ -21,5 +39,13 @@
   </script>
 </svelte:head>
 
-<DarkMode class="ml-auto" />
+<SettingsModal bind:open />
+
+<Button class="ml-auto mr-4 mt-2 border-none"
+	color="alternative" size="sm" onclick={toggle}
+>
+	<span class="sr-only">Settings</span>
+	<SettingsIcon />
+</Button>
+
 {@render children()}

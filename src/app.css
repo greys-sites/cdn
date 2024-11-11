@@ -11,6 +11,7 @@
 * {
 	box-sizing: border-box;
 	font-family: Roboto;
+	transition: all .25s;
 }
 
 html, body {

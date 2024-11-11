@@ -9,8 +9,8 @@
 		Textarea
 	} from 'flowbite-svelte';
 
-	/** @type {{alb: any, frm: any}} */
-	let { alb = $bindable(), frm } = $props();
+	/** @type {{alb: any, toggleEdit: any}} */
+	let { alb = $bindable(), toggleEdit } = $props();
 
 	$effect(() => {
 		if($page.form) {
@@ -30,7 +30,7 @@
 
 	function toggle(e) {
 		e?.preventDefault();
-		editing = !editing;
+		toggleEdit(alb)
 	}
 
 	function setDelete(e) {
@@ -44,51 +44,27 @@
 	}
 </script>
 
-{#if editing}
-	<form class='card-edit bg-gray-300 dark:bg-gray-700' method="post" action="/dash?/editalb" use:enhance>
-		<input type="hidden" name="oldhid" id="oldhid" value={alb.hid}>
-		<div class='info'>
-			<Input class="mb-2"
-				type="text" value={alb.hid} id="hid" name="hid" placeholder="hid"
-			/>
-			<Input class="mb-2"
-				type="text" value={alb.name} id="name" name="name" placeholder="name"
-			/>
-			<Input class="mb-2"
-				type="text" value={alb.cover_url} id="cover_url" name="cover_url" placeholder="cover url"
-			/>
-			<Textarea class="mb-2"
-				rows=10 id="description" name="description" placeholder="description"
-			/>
-			<div class='btns'>
-				<Button type="submit">Save</Button>
-				<Button onclick={toggle}>Cancel</Button>
-			</div>
+<form class='card bg-gray-300 dark:bg-gray-700 font-bold text-xl'
+	method="post" action="/dash?/delalb"
+	use:enhance
+>
+	<Input type="hidden" name="hid" id="hid" value={alb.hid} />
+	<div class='background' style="background-image: url('{alb.cover_url}')">
+	</div>
+	<div class='info'>
+		<h2>{alb.name}</h2>
+		<div class='btns'>
+			{#if !deleting}
+				<Button href={`/dash/album/${alb.hid}`}>View</Button>
+				<Button onclick={(e) => toggle(e)}>Edit</Button>
+				<Button onclick={(e) => setDelete(e)}>Delete</Button>
+			{:else}
+				<Button type="submit">Confirm</Button>
+				<Button onclick={(e) => cancelDelete(e)}>Cancel</Button>
+			{/if}
 		</div>
-	</form>
-{:else}
-	<form class='card bg-gray-300 dark:bg-gray-700 font-bold text-xl'
-		method="post" action="/dash?/delalb"
-		use:enhance
-	>
-		<Input type="hidden" name="hid" id="hid" value={alb.hid} />
-		<div class='background' style="background-image: url('{alb.cover_url}')">
-		</div>
-		<div class='info'>
-			<h2>{alb.name}</h2>
-			<div class='btns'>
-				{#if !deleting}
-					<Button href={`/dash/album/${alb.hid}`}>View</Button>
-					<Button onclick={(e) => toggle(e)}>Edit</Button>
-					<Button onclick={(e) => setDelete(e)}>Delete</Button>
-				{:else}
-					<Button type="submit">Confirm</Button>
-					<Button onclick={(e) => cancelDelete(e)}>Cancel</Button>
-				{/if}
-			</div>
-		</div>
-	</form>
-{/if}
+	</div>
+</form>
 
 <style>
 .card, .card-edit {

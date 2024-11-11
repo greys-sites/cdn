@@ -21,6 +21,9 @@
 	import Album from '$lib/components/album.svelte';
 	import Card from '$lib/components/card.svelte';
 
+	import ImageEditModal from '$lib/components/imageEdit.svelte';
+	import AlbumEditModal from '$lib/components/albumEdit.svelte';
+
 	/** @type {{form: any, data: any}} */
 	let { form, data } = $props();
 
@@ -37,6 +40,11 @@
 
 	let imgError = $state(null);
 	let albError = $state(null);
+
+	let imgEditModal = $state(false);
+	let imgEdit = $state(null);
+	let albEditModal = $state(false);
+	let albEdit = $state(null);
 
 	let albSelect = $state(null);
 	let albOpts = $derived.by(() => {
@@ -70,6 +78,16 @@
 	let closeAlbModal = () => {
 		albModal = false;
 		open = false;
+	}
+
+	let toggleImageEdit = (img) => {
+		imgEditModal = true;
+		imgEdit = img;
+	}
+
+	let toggleAlbumEdit = (alb) => {
+		albEditModal = true;
+		albEdit = alb;
 	}
 </script>
 
@@ -107,6 +125,9 @@
 	</form>
 </Modal>
 
+<ImageEditModal bind:open={imgEditModal} img={imgEdit} />
+<AlbumEditModal bind:open={albEditModal} alb={albEdit} />
+
 <div class="fab-wrapper">
 	{#if open}
 		<div transition:fly={{ duration: 500, y: 20 }}>
@@ -130,7 +151,7 @@
 <h2 class="text-xl font-bold">Albums</h2>
 <div class="container">
 	{#each albums as alb (alb.hid)}
-		<Album {alb} frm={form}/>
+		<Album {alb} toggleEdit={toggleAlbumEdit}/>
 	{/each}
 </div>
 {/if}
@@ -139,7 +160,7 @@
 <h2 class="text-xl font-bold">Unsorted Images</h2>
 <div class="container">
 	{#each images as img (img.hid)}
-		<Card {img} frm={form}/>
+		<Card {img} frm={form} toggleEdit={toggleImageEdit}/>
 	{/each}
 </div>
 {/if}

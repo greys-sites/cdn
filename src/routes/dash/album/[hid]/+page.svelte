@@ -20,6 +20,8 @@
 	import Plus from '~icons/ic/round-plus';
 
 	import Card from '$lib/components/card.svelte';
+	import AlbumEditModal from '$lib/components/albumEdit.svelte';
+	import ImageEditModal from '$lib/components/imageEdit.svelte';
 
 	/** @type {{form: any, data: any}} */
 	let { form, data } = $props();
@@ -33,6 +35,14 @@
 
 	let imgError = $state(null);
 	let albError = $state(null);
+
+	let imgEditModal = $state(false);
+	let imgEdit = $state(null);
+
+	let toggleImageEdit = (img) => {
+		imgEditModal = true;
+		imgEdit = img;
+	}
 
 	$effect(() => {
 		if(!data.user) goto('/dash');
@@ -80,35 +90,8 @@
 	</form>
 </Modal>
 
-<Modal title="Edit Album" bind:open={albModal} outsideclose>
-	{#if albError}
-		<Alert>
-			<span class="font-bold">Error:</span> {albError}
-		</Alert>
-	{/if}
-
-	<form action="/dash?/editalb" method="POST" enctype="multipart/form-data" use:enhance >
-		<input type="hidden" name="oldhid" id="oldhid" value={album.hid} />
-		<Label for="hid">Album ID</Label>
-		<Input class="mb-2"
-			type="text" value={album.hid} id="hid" name="hid" placeholder="hid"
-		/>
-		<Label for="name">Album name</Label>
-		<Input class="mb-2"
-			type="text" value={album.name} id="name" name="name" placeholder="name"
-		/>
-		<Label for="cover_url">Album cover</Label>
-		<Input class="mb-2"
-			type="text" value={album.cover_url} id="cover_url" name="cover_url" placeholder="cover url"
-		/>
-		<Label for="description">Album description</Label>
-		<Textarea class="mb-2"
-			rows=10 id="description" name="description" placeholder="description"
-			value={album.description}
-		/>
-		<Button type="submit">Create</Button>
-	</form>
-</Modal>
+<AlbumEditModal bind:open={albModal} alb={album} />
+<ImageEditModal bind:open={imgEditModal} img={imgEdit} />
 
 <div class="fab-wrapper">
 	{#if open}
@@ -138,7 +121,7 @@
 <h2 class="text-xl font-bold mt-4">Images</h2>
 <div class="container">
 	{#each images as img (img.hid)}
-		<Card {img} />
+		<Card {img} toggleEdit={toggleImageEdit} />
 	{/each}
 </div>
 

@@ -20,6 +20,11 @@
 
 	import Album from '$lib/components/album.svelte';
 	import Card from '$lib/components/card.svelte';
+	import Row from '$lib/components/row.svelte';
+
+	import { settings } from '$lib/stores/settings';
+
+	let view = $derived($settings.get('view'));
 
 	import ImageEditModal from '$lib/components/imageEdit.svelte';
 	import AlbumEditModal from '$lib/components/albumEdit.svelte';
@@ -151,7 +156,15 @@
 <h2 class="text-xl font-bold">Albums</h2>
 <div class="container">
 	{#each albums as alb (alb.hid)}
-		<Album {alb} toggleEdit={toggleAlbumEdit}/>
+		{#if view == 'grid'}
+			<Album {alb} toggleEdit={toggleAlbumEdit}/>
+		{:else}
+			<Row
+				itm={alb}
+				toggleEdit={toggleAlbumEdit}
+				type="album"
+			/>
+		{/if}
 	{/each}
 </div>
 {/if}
@@ -160,7 +173,15 @@
 <h2 class="text-xl font-bold">Unsorted Images</h2>
 <div class="container">
 	{#each images as img (img.hid)}
-		<Card {img} frm={form} toggleEdit={toggleImageEdit}/>
+		{#if view == 'grid'}
+			<Card {img} toggleEdit={toggleImageEdit}/>
+		{:else}
+			<Row
+				itm={img}
+				toggleEdit={toggleImageEdit}
+				type="image"
+			/>
+		{/if}
 	{/each}
 </div>
 {/if}

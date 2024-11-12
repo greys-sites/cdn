@@ -20,8 +20,13 @@
 	import Plus from '~icons/ic/round-plus';
 
 	import Card from '$lib/components/card.svelte';
+	import Row from '$lib/components/row.svelte';
 	import AlbumEditModal from '$lib/components/albumEdit.svelte';
 	import ImageEditModal from '$lib/components/imageEdit.svelte';
+
+	import { settings } from '$lib/stores/settings';
+
+	let view = $derived($settings.get('view'));
 
 	/** @type {{form: any, data: any}} */
 	let { form, data } = $props();
@@ -121,7 +126,15 @@
 <h2 class="text-xl font-bold mt-4">Images</h2>
 <div class="container">
 	{#each images as img (img.hid)}
-		<Card {img} toggleEdit={toggleImageEdit} />
+		{#if view == 'grid'}
+			<Card {img} toggleEdit={toggleImageEdit}/>
+		{:else}
+			<Row
+				itm={img}
+				toggleEdit={toggleImageEdit}
+				type="image"
+			/>
+		{/if}
 	{/each}
 </div>
 

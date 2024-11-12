@@ -42,7 +42,9 @@
 	}
 </script>
 
-<form class='card bg-gray-300 dark:bg-gray-700' method="post" action="?/delimg" use:enhance>
+<form class='card bg-gray-300 dark:bg-gray-700'
+	method="post" action="/dash?/delimg" use:enhance
+>
 	<input type="hidden" name="hid" id="hid" value={img.hid}>
 	<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
 	</div>

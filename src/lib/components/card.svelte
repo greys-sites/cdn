@@ -8,18 +8,44 @@
 		Label,
 		Textarea
 	} from 'flowbite-svelte';
+
+	import Image from '~icons/ic/round-image-not-supported';
 	
-	/** @type {{img: any}} */
-	let { img = $bindable(), toggleEdit } = $props();
+	/** @type {{itm: any}} */
+	let { itm = $bindable(), toggleEdit, type } = $props();
+
+	let url = $derived(
+		type == 'album' ?
+		`/dash/album/${itm.hid}` :
+		`/img/${itm.hid}.${itm.mime}`
+	)
+
+	let formid = $derived(
+		type == 'album' ?
+		`editalb` :
+		`editimg`
+	)
+
+	let action = $derived(
+		type == 'album' ?
+		`/dash?/delalb` :
+		`/dash?/delimg`
+	)
+
+	let bgurl = $derived(
+		type == 'album' ?
+		itm.cover_url :
+		`/img/${itm.hid}.${itm.mime}`
+	)
 
 	$effect(() => {
 		if($page.form) {
 			if(
 				$page.form.success &&
-				$page.form.id == 'editimg' &&
-				$page.form.data?.hid == img.hid
+				$page.form.id == formid &&
+				$page.form.data?.hid == itm.hid
 			) {
-				img = $page.form.data;
+				itm = $page.form.data;
 			}
 		}
 	});
@@ -38,21 +64,27 @@
 
 	const toggle = (e) => {
 		e.preventDefault();
-		toggleEdit(img)
+		toggleEdit(itm)
 	}
 </script>
 
 <form class='card bg-gray-300 dark:bg-gray-700'
-	method="post" action="/dash?/delimg" use:enhance
+	method="post" {action} use:enhance
 >
-	<input type="hidden" name="hid" id="hid" value={img.hid}>
-	<div class='wrapper' style="background-image: url('/img/{img.hid}.{img.mime}')">
-	</div>
+	<input type="hidden" name="hid" id="hid" value={itm.hid}>
+	{#if bgurl}
+		<div class='wrapper' style="background-image: url('{bgurl}')">
+		</div>
+	{:else}
+		<div class='wrapper flex justify-center items-center text-9xl'>
+			<Image />
+		</div>
+	{/if}
 	<div class='info'>
-		<h2>{img.name}</h2>
+		<h2>{itm.name}</h2>
 		<div class='btns'>
 			{#if !deleting}
-				<Button href={`/img/${img.hid}.${img.mime}`}>View</Button>
+				<Button href={url}>View</Button>
 				<Button onclick={(e) => toggle(e)}>Edit</Button>
 				<Button onclick={(e) => setDelete(e)}>Delete</Button>
 			{:else}
@@ -89,9 +121,6 @@
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
-	display: inline-block;
-	top: 0;
-	left: 0;
 	border-radius: 5px;
 }
 

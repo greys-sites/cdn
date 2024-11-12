@@ -9,7 +9,16 @@
   } from 'flowbite-svelte';
   import { enhance } from '$app/forms';
   
-  let { open = $bindable(), img, error } = $props();
+  let { open = $bindable(), img, error, opts } = $props();
+
+  let albSelect = $state(null);
+  let set = () => {
+  	albSelect = img?.album?.length ? img.album : null;
+  }
+
+  $effect(() => {
+  	if(open) set();
+  })
 </script>
 
 <Modal title="Edit Image" bind:open={open} size="xs" autoclose={false} outsideclose>
@@ -23,9 +32,8 @@
 		<Input class="mb-2"
 			type="text" value={img.name} id="name" name="name" placeholder="name" />
 
-		<Label for="album">Image album</Label>
-		<Input class="mb-2"
-			type="text" value={img.album} id="album" name="album" placeholder="album hid" />
+		<Label for="album" class="pb-2">Album</Label>
+		<Select name="album" id="album" items={opts} bind:value={albSelect} />
 
 		<Label for="description">Image description</Label>
 		<Textarea class="mb-2"

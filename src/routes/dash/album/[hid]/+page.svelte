@@ -44,6 +44,14 @@
 	let imgEditModal = $state(false);
 	let imgEdit = $state(null);
 
+	let albOpts = $derived.by(() => {
+		return [{ value: null, name: "Unsorted" }]
+		.concat(data?.all?.map(a => ({
+			value: a.hid,
+			name: a.name
+		}) ?? []));
+	})
+
 	let toggleImageEdit = (img) => {
 		imgEditModal = true;
 		imgEdit = img;
@@ -96,7 +104,7 @@
 </Modal>
 
 <AlbumEditModal bind:open={albModal} alb={album} />
-<ImageEditModal bind:open={imgEditModal} img={imgEdit} />
+<ImageEditModal bind:open={imgEditModal} img={imgEdit} opts={albOpts} />
 
 <div class="fab-wrapper">
 	{#if open}
@@ -124,19 +132,23 @@
 </div>
 
 <h2 class="text-xl font-bold mt-4">Images</h2>
-<div class="container">
-	{#each images as img (img.hid)}
-		{#if view == 'grid'}
-			<Card {img} toggleEdit={toggleImageEdit}/>
-		{:else}
-			<Row
-				itm={img}
-				toggleEdit={toggleImageEdit}
-				type="image"
-			/>
-		{/if}
-	{/each}
-</div>
+{#if images?. length}
+	<div class="container">
+		{#each images as img (img.hid)}
+			{#if view == 'grid'}
+				<Card itm={img} toggleEdit={toggleImageEdit} type="image" />
+			{:else}
+				<Row
+					itm={img}
+					toggleEdit={toggleImageEdit}
+					type="image"
+				/>
+			{/if}
+		{/each}
+	</div>
+{:else}
+	<p class="opacity-50 mt-4">Nothing has been uploaded yet.</p>
+{/if}
 
 <style lang="postcss">
 	* {

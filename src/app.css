@@ -24,7 +24,6 @@ body {
 	@apply dark:bg-gray-900;
 	@apply text-black;
 	@apply dark:text-slate-400;
-	@apply relative;
 	margin: 0;
 	font-family: Roboto;
 	display: flex;
@@ -46,15 +45,6 @@ body {
 	justify-content: space-between;
 	padding: 20px;
 	border-radius: 10px;
-}
-
-.container p {
-	width: 70%;
-	opacity: .8;
-}
-
-.container h1 {
-	opacity: .8;
 }
 
 form {
@@ -87,9 +77,5 @@ form {
 @media(max-width: 700px) {
 	form {
 		flex-direction: column;
-	}
-
-	.container p {
-		width: 100%;
 	}
 }

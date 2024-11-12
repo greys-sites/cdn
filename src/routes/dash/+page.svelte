@@ -18,7 +18,6 @@
 	import NewFolder from '~icons/ic/round-create-new-folder';
 	import Plus from '~icons/ic/round-plus';
 
-	import Album from '$lib/components/album.svelte';
 	import Card from '$lib/components/card.svelte';
 	import Row from '$lib/components/row.svelte';
 
@@ -130,7 +129,7 @@
 	</form>
 </Modal>
 
-<ImageEditModal bind:open={imgEditModal} img={imgEdit} />
+<ImageEditModal bind:open={imgEditModal} img={imgEdit} opts={albOpts} />
 <AlbumEditModal bind:open={albEditModal} alb={albEdit} />
 
 <div class="fab-wrapper">
@@ -157,7 +156,7 @@
 <div class="container">
 	{#each albums as alb (alb.hid)}
 		{#if view == 'grid'}
-			<Album {alb} toggleEdit={toggleAlbumEdit}/>
+			<Card itm={alb} toggleEdit={toggleAlbumEdit} type="album"/>
 		{:else}
 			<Row
 				itm={alb}
@@ -174,7 +173,7 @@
 <div class="container">
 	{#each images as img (img.hid)}
 		{#if view == 'grid'}
-			<Card {img} toggleEdit={toggleImageEdit}/>
+			<Card itm={img} toggleEdit={toggleImageEdit} type="image" />
 		{:else}
 			<Row
 				itm={img}

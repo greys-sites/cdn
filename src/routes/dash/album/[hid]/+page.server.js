@@ -9,6 +9,7 @@ export async function load({ cookies, params, fetch, locals }) {
 	var u = cookies.get('user');
 
 	var album = {}
+	var all = [];
 
 	try {
 		var r = await fetch(`/api/albums/${params.hid}`, {
@@ -17,6 +18,13 @@ export async function load({ cookies, params, fetch, locals }) {
 			}
 		})
 		if(r) album = await r.json();
+
+		r = await fetch(`/api/albums`, {
+			headers: {
+				'Authorization': u
+			}
+		})
+		if(r) all = await r.json();
 	} catch(e) {
 		console.log(e.response ?? e);
 		switch(e.response?.status) {
@@ -29,7 +37,7 @@ export async function load({ cookies, params, fetch, locals }) {
 		}
 	}
 
-	return { user: u, album };
+	return { user: u, album, all };
 }
 
 export const actions = {	

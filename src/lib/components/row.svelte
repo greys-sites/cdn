@@ -18,25 +18,25 @@
 	/** @type {{itm: any}} */
 	let { itm = $bindable(), toggleEdit, type } = $props();
 
-	let url = (
+	let url = $derived(
 		type == 'album' ?
 		`/dash/album/${itm.hid}` :
 		`/img/${itm.hid}.${itm.mime}`
 	)
 
-	let formid = (
+	let formid = $derived(
 		type == 'album' ?
 		`editalb` :
 		`editimg`
 	)
 
-	let action = (
+	let action = $derived(
 		type == 'album' ?
 		`/dash?/delalb` :
 		`/dash?/delimg`
 	)
 
-	let bgurl = (
+	let bgurl = $derived(
 		type == 'album' ?
 		itm.cover_url :
 		`/img/${itm.hid}.${itm.mime}`

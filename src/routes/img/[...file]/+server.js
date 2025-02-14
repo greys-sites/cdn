@@ -27,7 +27,8 @@ export async function GET({ request, params, locals }) {
 	return new Response(file, {
 		status: 200,
 		headers: {
-			'Content-Type': ct
+			'Content-Type': ct,
+			'Access-Control-Allow-Origin': '*'
 		}
 	});
 }
